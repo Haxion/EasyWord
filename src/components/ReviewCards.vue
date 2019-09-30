@@ -1,11 +1,36 @@
 <template>
   <div>
-    <h2>复习最近 3 天的单词</h2>
+    <!-- 标题及按钮 -->
+    <div class="title">
+      <h2>复习最近 {{this.totalValue}} 天的单词</h2>
+      <el-button icon="el-icon-setting" circle title="设置" @click="drawer = true"></el-button>
+    </div>
+
+    <!-- 单词卡片 -->
     <div class="card-container">
       <div class="card" v-for="item in wordsList" :key="item.id" :class="[cardBackGround[Math.round(Math.random() * 6 + 1)]]">
-        <span>{{item.word}}}</span>
+        <span>{{item.word}}</span>
       </div>
     </div>
+
+    <!-- 抽屉 -->
+    <el-drawer
+      title="设置复习的时间范围"
+      align="center"
+      :show-close="false"
+      :visible.sync="drawer"
+      :direction="direction"
+      :before-close="setDays">
+      <div class="slider">
+        <p>当前选择 <span>{{this.sliderValue}}</span> 天</p>
+        <el-slider
+          v-model="sliderValue"
+          :max="14"
+          :min="1"
+          show-stops>
+        </el-slider>
+      </div>
+    </el-drawer>
   </div>
 </template>
 
@@ -15,26 +40,52 @@ export default {
   data () {
     return {
       wordsList: [],
-      cardBackGround: []
+      cardBackGround: [],
+      drawer: false,
+      direction: 'btt',
+      totalValue: 3,
+      sliderValue: 3
+    }
+  },
+  methods: {
+    getWords () {
+      this.$http.post('/reviewCards', {totalDays: this.totalValue}).then(res => {
+        this.wordsList = res.data
+      })
+    },
+    setDays (done) {
+      this.$confirm('确认本次设置？')
+        .then(_ => {
+          this.totalValue = this.sliderValue
+          this.getWords()
+          done()
+        })
+        .catch(_ => { done() })
     }
   },
   created () {
-    this.$http.get('/reviewCards').then(res => {
-      this.wordsList = res.data
-    })
+    this.getWords()
 
     for (var i = 1; i <= 7; i++) {
       this.cardBackGround.push(`card-background-day${i}`)
     }
-    console.log(this.cardBackGround)
   }
 }
 </script>
 
 <style scoped>
 
-  h2 {
+  .title {
+    position: relative;
+    width: 80%;
+    margin: 0 auto;
     text-align: center;
+  }
+
+  .title button {
+    position: absolute;
+    right: 0;
+    top: 0;
   }
   .card-container {
     position: relative;
@@ -60,7 +111,6 @@ export default {
   }
 
   .card:hover span{
-    /*background: coral;*/
     font-size: 32px;
   }
 
@@ -69,6 +119,24 @@ export default {
     font-size: 28px;
     word-wrap: break-word;
     transition: font-size .2s ease;
+  }
+
+  .slider {
+    position: relative;
+    width: 60%;
+    left: -20px;
+    line-height: 25px;
+  }
+
+  .slider p {
+    margin: 10px;
+    line-height: 25px;
+  }
+
+  .slider span{
+    font-weight: bold;
+    font-size: 25px;
+    color: #2c90dd;
   }
 
   .card-background-day1 {

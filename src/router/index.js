@@ -5,6 +5,8 @@ import AddManyWords from '../components/AddManyWords'
 import SearchByDate from '@/components/SearchByDate'
 import SearchByLetters from '@/components/SearchByLetters'
 import ReviewCards from '@/components/ReviewCards'
+import EditWord from '@/components/EditWord'
+import BulletScreen2 from '@/components/BulletScreen2'
 
 Vue.use(Router)
 
@@ -44,6 +46,18 @@ export default new Router({
       path: '/dictionary/reviewCards',
       name: 'reviewCards',
       component: ReviewCards
+    },
+    // 修改单词
+    {
+      path: '/dictionary/editWord',
+      name: 'editWord',
+      component: EditWord
+    },
+    // 弹幕挑战
+    {
+      path: '/dictionary/bulletScreen',
+      name: 'bulletScreen',
+      component: BulletScreen2
     }
   ]
 })

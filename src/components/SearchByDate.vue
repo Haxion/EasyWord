@@ -47,6 +47,20 @@
           align="center"
           width="180">
         </el-table-column>
+        <el-table-column
+          label="操作"
+          align="center"
+          width="180">
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              @click="editWord(scope.$index, scope.row)">编辑</el-button>
+            <el-button
+              size="mini"
+              type="danger"
+              @click="deleteWord(scope.$index, scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
 
@@ -56,7 +70,7 @@
 <script>
 export default {
   name: 'SearchByDate',
-  inject: ['notifyMessage'],
+  inject: ['notifyMessage', 'editWord'],
   data () {
     return {
       dateRange: '',
@@ -82,6 +96,23 @@ export default {
 
         this.notifyMessage('查询成功', `共有 ${this.wordsList.length} 个单词。`, 'success')
       })
+    },
+    deleteWord (index, row, done) {
+      let word = row.word
+      let wordID = row._id
+      this.$confirm(`确认删除 ${word} 吗？`)
+        .then(_ => {
+          this.input = ''
+          this.wordsList.splice(index, 1)
+          this.$http.post('/deleteWord', {wordID: wordID}).then(res => {
+            this.$message({
+              message: `原单词 ${word} 删除成功`,
+              type: 'success'
+            })
+          })
+        })
+        .catch(_ => {})
+      console.log(index, row)
     }
   }
 }
@@ -91,6 +122,6 @@ export default {
   .table {
     position: relative;
     margin: 30px auto;
-    width: 460px;
+    width: 640px;
   }
 </style>

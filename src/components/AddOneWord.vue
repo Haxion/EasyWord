@@ -12,6 +12,7 @@
           prefix-icon="el-icon-edit el-input__icon"
           v-model="input"
           clearable
+          autofocus
           ref="myinput"
           @keyup.native.enter="addWord">
         </el-input>
@@ -36,13 +37,17 @@ export default {
   data () {
     return {
       input: '',
-      wordCards: ['welcome', 'to', 'my', 'dicitonary', 'enjoy!']
+      wordCards: ['welcome', 'to', 'my', 'dictionary', 'enjoy!']
     }
   },
   methods: {
     // 添加一个单词
     addWord () {
-      if (this.input === '') {
+      if (!/^[a-z]+$/i.test(this.input)) {
+        this.$message({
+          message: `请输入有效单词！`,
+          type: 'warning'
+        })
         return
       }
 
@@ -62,9 +67,11 @@ export default {
     // 自动获取单词卡片的数据
     this.$http.get('/addOneWord/cardWords').then(res => {
       this.wordCards = res.data
-
-      this.$refs.myinput.focus() // 输入框自动对焦
     })
+  },
+  mounted () {
+    // 输入框自动对焦
+    this.$refs.myinput.focus()
   },
   components: {
     WordCards

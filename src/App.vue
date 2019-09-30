@@ -42,14 +42,22 @@
             </el-submenu>
             <el-submenu index="3">
               <template slot="title"><i class="el-icon-view"></i>复习单词</template>
-              <el-menu-item index="/dictionary/reviewCards">复习卡片</el-menu-item>
-              <el-menu-item index="3-2">弹幕挑战</el-menu-item>
+              <el-menu-item index="/dictionary/reviewCards">
+                <i class="iconfont icon-qiapian icon-fontsize"></i>
+                复习卡片
+              </el-menu-item>
+              <el-menu-item index="/dictionary/bulletScreen">
+                <i class="iconfont icon-sudu icon-fontsize"></i>
+                弹幕挑战
+              </el-menu-item>
             </el-submenu>
           </el-menu>
         </el-aside>
         <!--右侧数据-->
         <el-main>
-          <router-view></router-view>
+          <!--<keep-alive>-->
+            <router-view></router-view>
+          <!--</keep-alive>-->
         </el-main>
       </el-container>
     </el-container>
@@ -73,11 +81,35 @@ export default {
         message: message,
         type: type
       })
+    },
+    editWord (index, row) {
+      let wordID = row._id
+
+      this.$prompt('请输入新单词', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputPattern: /^[A-Za-z]+$/i,
+        inputErrorMessage: '请输入正确的单词！'
+      }).then(({ value }) => {
+        row.word = value // 重置当前选择行的单词为新输入的单词
+        this.$http.post('/editWord', {word: row.word, wordID: wordID}).then(res => {
+          this.$message({
+            message: '修改成功。',
+            type: 'success'
+          })
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '取消修改'
+        })
+      })
     }
   },
   provide: function () {
     return {
-      notifyMessage: this.notifyMessage
+      notifyMessage: this.notifyMessage,
+      editWord: this.editWord
     }
   }
 }

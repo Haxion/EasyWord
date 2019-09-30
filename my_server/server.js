@@ -37,7 +37,11 @@ let dateObj = (function (dateObj) {
 
 // 添加一个单词
 app.post('/api/addOneWord', async function (req, res) {
-  await DictionaryModel.create(req.body)
+  let result = await DictionaryModel.find({word: req.body.word})
+  // 当单词未存在数据库中时添加
+  if (result.length === 0) {
+    await DictionaryModel.create(req.body)
+  }
   res.send('ok')
   res.end()
 })
@@ -66,7 +70,11 @@ app.get('/api/addOneWord/cardWords', async function (req, res) {
 app.post('/api/addManyWords', async function (req, res) {
   let wordsList = req.body.wordsList
   for (let i of wordsList) {
-    await DictionaryModel.create(i)
+    let result = await DictionaryModel.find({word: i.word})
+    // 当单词未存在数据库中时添加
+    if (result.length === 0) {
+      await DictionaryModel.create(i)
+    }
   }
   res.send('ok')
   res.end()
@@ -100,10 +108,37 @@ app.post('/api/searchByLetters', async function (req, res) {
 })
 
 // 单词复习卡片
-app.get('/api/reviewCards', async function (req, res) {
+app.post('/api/reviewCards', async function (req, res) {
+  let totalDays = req.body.totalDays
   let today = dateObj.today
-  let past3Days = dateObj.pastNDays(3)
-  let wordsList = await DictionaryModel.find({date: {$gte: past3Days, $lte: today}})
+  let pastNDays = dateObj.pastNDays(totalDays)
+  let wordsList = await DictionaryModel.find({date: {$gte: pastNDays, $lte: today}})
   res.send(wordsList)
+  res.end()
+})
+
+// 修改单词
+app.post('/api/editWord', async function (req, res) {
+  let newWord = req.body.word
+  console.log(newWord)
+  let wordId = req.body.wordID
+  let result = await DictionaryModel.updateOne({_id: wordId}, {word: newWord})
+  res.send(result)
+  res.end()
+})
+
+// 删除单词
+app.post('/api/deleteWord', async function (req, res) {
+  let wordID = req.body.wordID
+  let result = await DictionaryModel.deleteOne({_id: wordID})
+  res.send(result)
+  res.end()
+})
+
+// 弹幕挑战
+app.get('/api/bulletScreen', async function (req, res) {
+  let total = 30 // 单词总量
+  let result = await DictionaryModel.find().limit(total)
+  res.send(result)
   res.end()
 })

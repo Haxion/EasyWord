@@ -66,6 +66,10 @@ export default {
       this.textarea = ''
       this.$refs.myinput.focus()
     }
+  },
+  mounted () {
+    // 输入框自动对焦
+    this.$refs.myinput.focus()
   }
 }
 </script>

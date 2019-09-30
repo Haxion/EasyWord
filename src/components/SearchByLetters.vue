@@ -10,6 +10,7 @@
         <el-input
           placeholder="输入待查找单词包含的字母，不确定的部分用空格代替"
           prefix-icon="el-icon-search"
+          ref="myinput"
           clearable
           autofocus
           v-model="input"
@@ -26,7 +27,6 @@
         highlight-current-row
         fit
         style="width: 100%">
-        <!--<el-table-column type="selection"></el-table-column>-->
         <el-table-column
           type="index"
           label="序号"
@@ -45,6 +45,20 @@
           align="center"
           width="180">
         </el-table-column>
+        <el-table-column
+          label="操作"
+          align="center"
+          width="180">
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              @click="editWord(scope.$index, scope.row)">编辑</el-button>
+            <el-button
+              size="mini"
+              type="danger"
+              @click="deleteWord(scope.$index, scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
   </div>
@@ -53,7 +67,7 @@
 <script>
 export default {
   name: 'SearchByLetters',
-  inject: ['notifyMessage'],
+  inject: ['notifyMessage', 'editWord'],
   data () {
     return {
       input: '',
@@ -79,7 +93,27 @@ export default {
 
         this.notifyMessage('查询成功', `共有 ${this.wordsList.length} 个单词。`, 'success')
       })
+    },
+    deleteWord (index, row, done) {
+      let word = row.word
+      let wordID = row._id
+      this.$confirm(`确认删除 ${word} 吗？`)
+        .then(_ => {
+          this.input = ''
+          this.wordsList.splice(index, 1)
+          this.$http.post('/deleteWord', {wordID: wordID}).then(res => {
+            this.$message({
+              message: `原单词 ${word} 删除成功`,
+              type: 'success'
+            })
+          })
+        })
+        .catch(_ => {})
+      console.log(index, row)
     }
+  },
+  mounted () {
+    this.$refs.myinput.focus()
   }
 }
 </script>
@@ -88,6 +122,6 @@ export default {
   .table {
     position: relative;
     margin: 30px auto;
-    width: 460px;
+    width: 640px;
   }
 </style>
