@@ -10,6 +10,7 @@ import axios from 'axios'
 Vue.use(ElementUI)
 Vue.prototype.$http = axios.create({
   baseURL: 'http://localhost:8081/api'
+  // baseURL: 'http://108.61.186.250:8081/api'
 })
 
 Vue.config.productionTip = false

@@ -52,7 +52,7 @@
               </el-menu-item>
             </el-submenu>
           </el-menu>
-        </el-aside>
+        </el-aside >
         <!--右侧数据-->
         <el-main>
           <!--<keep-alive>-->
@@ -141,6 +141,10 @@ export default {
 
   .icon-fontsize{
     font-size: 20px;
+  }
+
+  .el-main{
+    min-width: 800px;
   }
 
 </style>

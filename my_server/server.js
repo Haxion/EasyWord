@@ -48,11 +48,10 @@ app.post('/api/addOneWord', async function (req, res) {
 
 // 获取单词卡片的数据
 app.get('/api/addOneWord/cardWords', async function (req, res) {
-  // let today = new Date().setHours(0, 0, 0) // 将时间设置为今天 0：0：0 时刻
-  // let past7Days = today - 3600 * 1000 * 24 * 7
-  let today = dateObj.today
+  // let today = dateObj.today
   let past7Days = dateObj.pastNDays(7)
-  let wordsArray = await DictionaryModel.find({date: {$gte: past7Days, $lte: today}})
+  // let wordsArray = await DictionaryModel.find({date: {$gte: past7Days, $lte: today}})
+  let wordsArray = await DictionaryModel.find({date: {$gte: past7Days}})
 
   let wordsList = []
   let total = 5 // 查询 5 条随机单词记录
