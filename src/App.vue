@@ -144,7 +144,7 @@ export default {
   }
 
   .el-main{
-    min-width: 800px;
+    min-width: 830px;
   }
 
 </style>

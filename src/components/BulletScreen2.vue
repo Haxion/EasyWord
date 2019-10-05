@@ -145,11 +145,11 @@ export default {
         this.isWordCheckShow = false // 关闭显示单词列表
         this.isGlitchShow = false // 关闭 glitch 文字
         this.checkList = [] // 重置已选单词数组
-        window.onresize = this.resizeWindow.bind(this) // 设置 canvas 自动根据窗口调整
 
         if (this.bulletItem.length === 0) {
           this.createBulletWord() // 生成弹幕实例
         } else {
+          window.onresize = this.resizeWindow.bind(this) // 设置 canvas 自动根据窗口调整
           this.requestAnimationFrameID.push(window.requestAnimationFrame(this.freshFn)) // 重新执行动画
         }
       }

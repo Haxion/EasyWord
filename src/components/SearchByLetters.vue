@@ -61,6 +61,11 @@
         </el-table-column>
       </el-table>
     </div>
+
+    <!--图片-->
+    <div class="pic" v-show="wordsList.length === 0 ">
+      <img src="../assets/search-letters.svg" alt="暂无数据">
+    </div>
   </div>
 </template>
 
@@ -123,5 +128,25 @@ export default {
     position: relative;
     margin: 30px auto;
     width: 640px;
+  }
+
+  .pic {
+    position: relative;
+    top: 30px;
+    text-align: center;
+    user-select: none;
+  }
+
+  .pic img {
+    width: 350px;
+  }
+
+  .pic::after {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    content: '';
+    display: block;
   }
 </style>

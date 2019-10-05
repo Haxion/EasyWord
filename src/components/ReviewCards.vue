@@ -6,9 +6,15 @@
       <el-button icon="el-icon-setting" circle title="设置" @click="drawer = true"></el-button>
     </div>
 
+    <div class="no-data" v-show="wordsList.length === 0 ">
+      <img src="../assets/no_data.svg" alt="暂无数据">
+      <p>未查到记录</p>
+    </div>
+
     <!-- 单词卡片 -->
     <div class="card-container">
-      <div class="card" v-for="item in wordsList" :key="item.id" :class="[cardBackGround[Math.round(Math.random() * 6 + 1)]]">
+      <div class="card" v-for="item in wordsList" :key="item.id"
+           :class="[cardBackGround[Math.round(Math.random() * 6 + 1)]]">
         <span>{{item.word}}</span>
       </div>
     </div>
@@ -60,7 +66,9 @@ export default {
           this.getWords()
           done()
         })
-        .catch(_ => { done() })
+        .catch(_ => {
+          done()
+        })
     }
   },
   created () {
@@ -87,6 +95,36 @@ export default {
     right: 0;
     top: 0;
   }
+
+  .no-data {
+    position: relative;
+    top: 70px;
+    text-align: center;
+    user-select: none;
+  }
+
+  .no-data img {
+    width: 400px;
+  }
+
+  .no-data p {
+    position: absolute;
+    top: 120px;
+    left: 50%;
+    color: #ffffff;
+    font-size: 23px;
+    font-style: italic;
+  }
+
+  .no-data::after {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    content: '';
+    display: block;
+  }
+
   .card-container {
     position: relative;
     width: 100%;
@@ -107,10 +145,10 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: width,height,margin .5s;
+    transition: width, height, margin .5s;
   }
 
-  .card:hover span{
+  .card:hover span {
     font-size: 32px;
   }
 
@@ -133,7 +171,7 @@ export default {
     line-height: 25px;
   }
 
-  .slider span{
+  .slider span {
     font-weight: bold;
     font-size: 25px;
     color: #2c90dd;
